@@ -1,0 +1,4 @@
+*.orig.py
+.DS_Store
+*~
+*.pyc
