@@ -1,9 +1,4 @@
-'''Trains a simple deep NN on the MNIST dataset.
-
-Gets to 98.40% test accuracy after 20 epochs
-(there is *a lot* of margin for parameter tuning).
-2 seconds per epoch on a K520 GPU.
-'''
+'''Prunes pre-trained  NN on the MNIST dataset.'''
 
 from __future__ import print_function
 import tensorflow as tf
@@ -23,7 +18,7 @@ batch_size = 128
 num_neurons = 128
 num_classes = 10
 num_inputs = 28*28
-epochs = 20
+epochs = 100
 initial_sparsity = 0.0
 final_sparsity = 0.9
 optimizer = 'adam'
@@ -85,9 +80,11 @@ history = pruned_model.fit(X_train, y_train,
                            callbacks=callbacks)
 score = pruned_model.evaluate(X_test, y_test, verbose=0)
 
+last_test_loss = score[0]
+last_test_acc = score[1]
 
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
+print('last_test_loss: %f'% last_test_loss)
+print('last_test_acc: %f'% last_test_acc)
 
 pruned_model = sparsity.strip_pruning(pruned_model)
 pruned_model.summary()

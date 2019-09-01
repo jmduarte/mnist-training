@@ -25,8 +25,8 @@ batch_size = 128
 num_neurons = 128
 num_classes = 10
 num_inputs = 28*28
-epochs = 20
-dropout_rate = 0.2
+epochs = 100
+dropout_rate = 0.1
 optimizer = 'adam'
 l1_reg = 0 # 0.0001
 

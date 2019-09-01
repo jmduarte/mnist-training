@@ -16,7 +16,7 @@ diff: download
 .PHONY: diff
 
 predict:
-	python ./$(MODEL).pred.py
+	python ./$(MODEL)_pred.py
 .PHONY: predict
 
 clean:

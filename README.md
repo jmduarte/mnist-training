@@ -21,7 +21,7 @@ make prediction
 
 To prune the model to 90% sparsity:
 ```
-python mnist_mlp.prune.py
+python mnist_mlp_prune.py
 ```
 
 To check the model compression:
@@ -37,4 +37,9 @@ make diff
 To run a hyperparameter scan with guild.ai:
 ```
 guild run train epochs=100 optimizer=[adam,nadam,rmsprop,sgd] dropout_rate=[0,0.1,0.2] l1_reg=[0,1e-5,1e-4]
+```
+
+To run different pruning hyperparameters:
+```
+guild run prune epochs=100 optimizer=[adam,nadam,rmsprop,sgd] final_sparsity=[0.3,0.5,0.7,0.9,0.95,0.97,0.99]
 ```

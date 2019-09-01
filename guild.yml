@@ -3,3 +3,6 @@
     train:
       main: mnist_mlp
       output-scalars: '^(\key): (\value)'
+    prune:
+      main: mnist_mlp_prune
+      output-scalars: '^(\key): (\value)'
