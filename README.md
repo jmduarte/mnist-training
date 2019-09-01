@@ -33,3 +33,8 @@ Compare the local implementation with the source:
 ```
 make diff
 ```
+
+To run a hyperparameter scan with guild.ai:
+```
+guild run train epochs=100 optimizer=[adam,nadam,rmsprop,sgd] dropout_rate=[0,0.1,0.2] l1_reg=[0,1e-5,1e-4]
+```

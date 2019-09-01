@@ -69,7 +69,8 @@ model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 callbacks = [tf.keras.callbacks.TensorBoard(log_dir=logdir, profile_batch=0),
-             tf.keras.callbacks.ModelCheckpoint('model/KERAS_mnist_mlp%i_weights.h5'%num_neurons, monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1)
+             tf.keras.callbacks.ModelCheckpoint('model/KERAS_mnist_mlp%i_weights.h5'%num_neurons, monitor='val_acc', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1),
+             tf.keras.callbacks.EarlyStopping(monitor='val_acc', patience=20)
              ]
 
 history = model.fit(X_train, y_train,
@@ -83,8 +84,11 @@ history = model.fit(X_train, y_train,
 model.load_weights('model/KERAS_mnist_mlp%i_weights.h5'%num_neurons)
 score = model.evaluate(X_test, y_test, verbose=0)
 
-print('Test loss:', score[0])
-print('Test accuracy:', score[1])
+best_test_loss = score[0]
+best_test_acc = score[1]
+
+print('best_test_loss: %f'% best_test_loss)
+print('best_test_acc: %f'% best_test_acc)
 
 def print_model_to_json(keras_model, outfile_name):
     outfile = open(outfile_name,'w')

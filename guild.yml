@@ -1,0 +1,5 @@
+- model: mnist_mlp
+  operations:
+    train:
+      main: mnist_mlp
+      output-scalars: '^(\key): (\value)'

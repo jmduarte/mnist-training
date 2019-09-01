@@ -5,3 +5,5 @@ pip uninstall -y tf-nightly
 pip install -q -U tf-nightly-gpu
 pip install -q tensorflow-model-optimization
 pip install matplotlib
+pip install guildai
+pip uninstall -y enum34
