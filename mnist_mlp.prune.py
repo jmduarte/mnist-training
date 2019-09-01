@@ -26,6 +26,7 @@ num_inputs = 28*28
 epochs = 20
 initial_sparsity = 0.0
 final_sparsity = 0.9
+optimizer = 'adam'
 
 # the data, split between train and test sets
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
@@ -69,7 +70,7 @@ pruned_model = sparsity.prune_low_magnitude(model, **new_pruning_params)
 pruned_model.summary()
 
 pruned_model.compile(loss='categorical_crossentropy',
-              optimizer='adam',
+              optimizer=optimizer,
               metrics=['accuracy'])
 
 callbacks = [tf.keras.callbacks.TensorBoard(log_dir=logdir, profile_batch=0),

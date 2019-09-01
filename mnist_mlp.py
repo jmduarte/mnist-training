@@ -13,9 +13,13 @@ import tensorflow.keras as keras
 from tensorflow.keras.datasets import mnist
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense, Dropout
+from tensorflow.keras import regularizers
 
 import tempfile
 logdir = tempfile.mkdtemp()
+
+import os
+os.makedirs('model',exist_ok=True)
 
 batch_size = 128
 num_neurons = 128
@@ -23,6 +27,8 @@ num_classes = 10
 num_inputs = 28*28
 epochs = 20
 dropout_rate = 0.2
+optimizer = 'adam'
+l1_reg = 0 # 0.0001
 
 # the data, split between train and test sets
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
@@ -42,24 +48,24 @@ y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
 inputs = Input(shape = (num_inputs,), name='input_1')
-x = Dense(num_neurons, activation='relu', name='dense_1')(inputs)
+x = Dense(num_neurons, activation='relu', name='dense_1', kernel_regularizer=regularizers.l1(l1_reg))(inputs)
 x = Dropout(dropout_rate, name='dropout_1')(x)
-x = Dense(num_neurons, activation='relu', name='dense_2')(x)
+x = Dense(num_neurons, activation='relu', name='dense_2', kernel_regularizer=regularizers.l1(l1_reg))(x)
 x = Dropout(dropout_rate, name='dropout_2')(x)
-x = Dense(num_neurons, activation='relu', name='dense_3')(x)
+x = Dense(num_neurons, activation='relu', name='dense_3', kernel_regularizer=regularizers.l1(l1_reg))(x)
 x = Dropout(dropout_rate, name='dropout_3')(x)
-x = Dense(num_neurons, activation='relu', name='dense_4')(x)
+x = Dense(num_neurons, activation='relu', name='dense_4', kernel_regularizer=regularizers.l1(l1_reg))(x)
 x = Dropout(dropout_rate, name='dropout_4')(x)
-x = Dense(num_neurons, activation='relu', name='dense_5')(x)
+x = Dense(num_neurons, activation='relu', name='dense_5', kernel_regularizer=regularizers.l1(l1_reg))(x)
 x = Dropout(dropout_rate, name='dropout_5')(x)
-outputs = Dense(num_classes, activation='softmax', name='dense_6')(x)
+outputs = Dense(num_classes, activation='softmax', name='dense_6', kernel_regularizer=regularizers.l1(l1_reg))(x)
 
 model = Model(inputs=inputs, outputs=outputs)
 
 model.summary()
 
 model.compile(loss='categorical_crossentropy',
-              optimizer='adam',
+              optimizer=optimizer,
               metrics=['accuracy'])
 
 callbacks = [tf.keras.callbacks.TensorBoard(log_dir=logdir, profile_batch=0),
@@ -72,9 +78,11 @@ history = model.fit(X_train, y_train,
                     verbose=1,
                     validation_data=(X_test, y_test),
                     callbacks=callbacks)
+
+# reload best weights
+model.load_weights('model/KERAS_mnist_mlp%i_weights.h5'%num_neurons)
 score = model.evaluate(X_test, y_test, verbose=0)
 
-model.load_weights('model/KERAS_mnist_mlp%i_weights.h5'%num_neurons)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
