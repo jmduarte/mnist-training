@@ -6,3 +6,7 @@
     prune:
       main: mnist_mlp_prune
       output-scalars: '^(\key): (\value)'
+      requires:
+        - file: model/KERAS_mnist_mlp128.json
+        - file: model/KERAS_mnist_mlp128_weights.h5
+      
