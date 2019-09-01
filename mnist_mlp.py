@@ -6,22 +6,29 @@ Gets to 98.40% test accuracy after 20 epochs
 '''
 
 from __future__ import print_function
+import tensorflow as tf
+import tensorboard
+import tensorflow.keras as keras
 
-import keras
-from keras.datasets import mnist
-from keras.models import Sequential
-from keras.layers import Dense, Dropout
-from keras.optimizers import RMSprop
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Dense, Dropout
+
+import tempfile
+logdir = tempfile.mkdtemp()
 
 batch_size = 128
+num_neurons = 128
 num_classes = 10
+num_inputs = 28*28
 epochs = 20
+dropout_rate = 0.2
 
 # the data, split between train and test sets
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
-X_train = X_train.reshape(60000, 784)
-X_test = X_test.reshape(10000, 784)
+X_train = X_train.reshape(-1, num_inputs)
+X_test = X_test.reshape(-1, num_inputs)
 X_train = X_train.astype('float32')
 X_test = X_test.astype('float32')
 X_train /= 255
@@ -29,37 +36,45 @@ X_test /= 255
 print(X_train.shape[0], 'train samples')
 print(X_test.shape[0], 'test samples')
 
+
 # convert class vectors to binary class matrices
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
-print(X_train)
+inputs = Input(shape = (num_inputs,), name='input_1')
+x = Dense(num_neurons, activation='relu', name='dense_1')(inputs)
+x = Dropout(dropout_rate, name='dropout_1')(x)
+x = Dense(num_neurons, activation='relu', name='dense_2')(x)
+x = Dropout(dropout_rate, name='dropout_2')(x)
+x = Dense(num_neurons, activation='relu', name='dense_3')(x)
+x = Dropout(dropout_rate, name='dropout_3')(x)
+x = Dense(num_neurons, activation='relu', name='dense_4')(x)
+x = Dropout(dropout_rate, name='dropout_4')(x)
+x = Dense(num_neurons, activation='relu', name='dense_5')(x)
+x = Dropout(dropout_rate, name='dropout_5')(x)
+outputs = Dense(num_classes, activation='softmax', name='dense_6')(x)
 
-model = Sequential()
-model.add(Dense(128, activation='relu', input_shape=(784,)))
-model.add(Dropout(0.2))
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(num_classes, activation='softmax'))
+model = Model(inputs=inputs, outputs=outputs)
 
 model.summary()
 
 model.compile(loss='categorical_crossentropy',
-              optimizer=RMSprop(),
+              optimizer='adam',
               metrics=['accuracy'])
+
+callbacks = [tf.keras.callbacks.TensorBoard(log_dir=logdir, profile_batch=0),
+             tf.keras.callbacks.ModelCheckpoint('model/KERAS_mnist_mlp%i_weights.h5'%num_neurons, monitor='val_loss', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1)
+             ]
 
 history = model.fit(X_train, y_train,
                     batch_size=batch_size,
                     epochs=epochs,
                     verbose=1,
-                    validation_data=(X_test, y_test))
+                    validation_data=(X_test, y_test),
+                    callbacks=callbacks)
 score = model.evaluate(X_test, y_test, verbose=0)
+
+model.load_weights('model/KERAS_mnist_mlp%i_weights.h5'%num_neurons)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
 
@@ -72,6 +87,6 @@ def print_model_to_json(keras_model, outfile_name):
         json.dump(obj, outfile, sort_keys=True,indent=4, separators=(',', ': '))
         outfile.write('\n')
 
-print_model_to_json(model, 'model/KERAS_mnist_mlp.json')
-model.save_weights('model/KERAS_mnist_mlp_weights.h5')
+print_model_to_json(model, 'model/KERAS_mnist_mlp%i.json'%num_neurons)
+#model.save_weights('model/KERAS_mnist_mlp%i_weights.h5'%num_neurons)
 
