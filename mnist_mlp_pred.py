@@ -21,7 +21,7 @@ with open('./model/KERAS_mnist_mlp%i.json'%num_neurons, 'r') as f:
 
 # Load weights into the new model
 model.load_weights('./model/KERAS_mnist_mlp%i_weights.h5'%num_neurons)
-model.load_weights('max_test_acc/fb123d68cce611e9962342010a8a0002/model/KERAS_mnist_mlp128_weights.h5')
+
 model.compile(loss='categorical_crossentropy',
                             optimizer='adam',
                             metrics=['accuracy'])
@@ -60,3 +60,6 @@ print('INFO: top prediction: ', pred.argmax())
 plt.imshow(x_test[image_index].reshape(x_input, y_input), cmap='Greys')
 plt.show()
 
+np.savetxt('./model/KERAS_mnist_mlp%i_input_features.dat'%num_neurons, x_test, fmt='%g',)
+np.savetxt('./model/KERAS_mnist_mlp%i_truth_labels.dat'%num_neurons, y_test, fmt='%g',)
+np.savetxt('./model/KERAS_mnist_mlp%i_predictions.dat'%num_neurons, pred, fmt='%g',)
