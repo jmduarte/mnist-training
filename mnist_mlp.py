@@ -23,6 +23,7 @@ os.makedirs('model',exist_ok=True)
 
 batch_size = 128
 num_neurons = 128
+num_hidden_layers = 1
 num_classes = 10
 num_inputs = 28*28
 epochs = 20
@@ -48,17 +49,11 @@ y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
 inputs = Input(shape = (num_inputs,), name='input_1')
-x = Dense(num_neurons, activation='relu', name='dense_1', kernel_regularizer=regularizers.l1(l1_reg))(inputs)
-x = Dropout(dropout_rate, name='dropout_1')(x)
-x = Dense(num_neurons, activation='relu', name='dense_2', kernel_regularizer=regularizers.l1(l1_reg))(x)
-x = Dropout(dropout_rate, name='dropout_2')(x)
-x = Dense(num_neurons, activation='relu', name='dense_3', kernel_regularizer=regularizers.l1(l1_reg))(x)
-x = Dropout(dropout_rate, name='dropout_3')(x)
-x = Dense(num_neurons, activation='relu', name='dense_4', kernel_regularizer=regularizers.l1(l1_reg))(x)
-x = Dropout(dropout_rate, name='dropout_4')(x)
-x = Dense(num_neurons, activation='relu', name='dense_5', kernel_regularizer=regularizers.l1(l1_reg))(x)
-x = Dropout(dropout_rate, name='dropout_5')(x)
-outputs = Dense(num_classes, activation='softmax', name='dense_6', kernel_regularizer=regularizers.l1(l1_reg))(x)
+x = inputs
+for i in range(1,num_hidden_layers+1):
+    x = Dense(num_neurons, activation='relu', name='dense_%i'%i, kernel_regularizer=regularizers.l1(l1_reg))(x)
+    x = Dropout(dropout_rate, name='dropout_%i'%i)(x)
+outputs = Dense(num_classes, activation='softmax', name='dense_%i'%(num_hidden_layers+1), kernel_regularizer=regularizers.l1(l1_reg))(x)
 
 model = Model(inputs=inputs, outputs=outputs)
 

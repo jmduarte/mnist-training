@@ -27,7 +27,7 @@ batch_size = 128
 num_neurons = 128
 num_classes = 10
 num_inputs = 28*28
-epochs = 100
+epochs = 40
 initial_sparsity = 0.0
 final_sparsity = 0.9
 optimizer = 'adam'
@@ -97,6 +97,7 @@ print('last_test_acc: %f'% last_test_acc)
 
 pruned_model = sparsity.strip_pruning(pruned_model)
 pruned_model.summary()
-#print_model_to_json(pruned_model, 'model/KERAS_mnist_mlp.json')
-pruned_model.save_weights('model/KERAS_mnist_mlp%i_weights_prune%.2f.h5'%(num_neurons,final_sparsity))
+from mnist_mlp import print_model_to_json
+print_model_to_json(pruned_model, 'model/KERAS_mnist_mlp%i_prune%.2f.json'%(num_neurons,final_sparsity))
+pruned_model.save_weights('model/KERAS_mnist_mlp%i_prune%.2f_weights.h5'%(num_neurons,final_sparsity))
 
