@@ -14,10 +14,10 @@ num_neurons = 128
 num_inputs = x_input*y_input
 num_classes = 10
 model_name = './model/KERAS_mnist_mlp%i'%num_neurons
-#final_sparsity = 0.9
-#model_name = './model/KERAS_mnist_mlp%i_prune%.2f'%(num_neurons,final_sparsity)
-
 import sys
+if len(sys.argv)>1 and sys.argv[1]=='-p':
+    final_sparsity = 0.9
+    model_name = './model/KERAS_mnist_mlp%i_prune%.2f'%(num_neurons,final_sparsity)
 
 # Model reconstruction from JSON file
 with open('%s.json'%model_name, 'r') as f:
