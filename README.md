@@ -21,17 +21,12 @@ make prediction
 
 To prune the model to 90% sparsity:
 ```
-python mnist_mlp_prune.py
+make prune
 ```
 
 To check the model compression:
 ```
 python check_compression.py
-```
-
-Compare the local implementation with the source:
-```
-make diff
 ```
 
 To run a hyperparameter scan with guild.ai:

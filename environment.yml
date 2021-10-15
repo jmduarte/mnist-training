@@ -1,0 +1,10 @@
+name: mnist-training
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+    - tf-nightly-gpu
+    - tensorflow-model-optimization
+    - guildai

@@ -17,12 +17,6 @@ logdir = tempfile.mkdtemp()
 import os
 os.makedirs('model',exist_ok=True)
 
-from shutil import copyfile
-if os.path.isfile('KERAS_mnist_mlp128.json'):
-    copyfile('KERAS_mnist_mlp128.json', 'model/KERAS_mnist_mlp128.json')
-if os.path.isfile('KERAS_mnist_mlp128.h5'):
-    copyfile('KERAS_mnist_mlp128.h5', 'model/KERAS_mnist_mlp128.h5')
-    
 batch_size = 128
 num_neurons = 128
 num_classes = 10
@@ -55,7 +49,7 @@ with open('./model/KERAS_mnist_mlp%s.json'%num_neurons, 'r') as f:
     model = model_from_json(f.read())
 
 # Load weights into the new model
-model.load_weights('./model/KERAS_mnist_mlp%s.h5'%num_neurons)
+model.load_weights('./model/KERAS_mnist_mlp%s_weights.h5'%num_neurons)
 
 model.summary()
 
