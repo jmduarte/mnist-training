@@ -64,8 +64,8 @@ model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 callbacks = [tf.keras.callbacks.TensorBoard(log_dir=logdir, profile_batch=0),
-             tf.keras.callbacks.ModelCheckpoint('model/KERAS_mnist_mlp%i_weights.h5'%num_neurons, monitor='val_acc', verbose=0, save_best_only=True, save_weights_only=True, mode='auto', period=1),
-             tf.keras.callbacks.EarlyStopping(monitor='val_acc', patience=20)
+             tf.keras.callbacks.ModelCheckpoint('model/KERAS_mnist_mlp%i_weights.h5'%num_neurons, monitor='val_accuracy', verbose=0, save_best_only=True, mode='max', save_freq='epoch', save_weights_only=True),
+             tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', patience=20)
              ]
 
 history = model.fit(X_train, y_train,
