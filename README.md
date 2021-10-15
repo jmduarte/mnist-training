@@ -1,8 +1,5 @@
 # MNIST MLP
 
-## Source
-https://github.com/keras-team/keras/blob/master/examples/mnist_mlp.py
-
 ## Quick Start
 To setup with conda/pip (assuming they already installed):
 ```
